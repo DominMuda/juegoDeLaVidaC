@@ -1,29 +1,32 @@
 #include<stdio.h>
-#include"matrix.h"
-#include"cell.h"
+#include"headers/matrix.h"
 
-void inicializa(const struct matrix m,cell cells[m.x][m.y]){
+#define TAMY 2
+#define TAMX 1
+
+void inicializa(char cells[TAMX][TAMY]){
 	int i;
 	int j;
-	for (i = 0;i<m.x;++){
-		for(j = 0;j<m.y;j++){
-		cells[i][j] = {'%'};
-		printf("[%c]", cells[i][j].estado);
+	for (i = 0;i<TAMX;i++){
+		for(j = 0;j<TAMY;j++){
+		cells[i][j] = '%';
+		printf("[%c]", cells[i][j]);
 		}
 		printf("\n");
 	}
 }
 
 
-void representa(const struct matrix m,cell cells[m.x][m.y]){
+void representa(char cells[TAMX][TAMY]){
         int i;
         int j;
-        for (i = 0;i<m.x;++){
-                for(j = 0;j<m.y;j++){
-                printf("[%c]", cells[i][j].estado);
+        for (i = 0;i<TAMX;i++){
+                for(j = 0;j<TAMY;j++){
+                printf("[%c]", cells[i][j]);
                 }
                 printf("\n");
         }
 }
+
 
 
