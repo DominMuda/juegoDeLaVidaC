@@ -1,3 +1,4 @@
+.PHONY: clean
 all: mi_proy
 
 mi_proy:main.o matrix.o
@@ -8,3 +9,7 @@ main.o:main.c matrix.o
 
 matrix.o: headers/matrix.h matrix.c
 	gcc -c matrix.c
+
+clean:
+	rm -f *.o
+	rm -f mi_proy

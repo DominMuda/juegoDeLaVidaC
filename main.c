@@ -1,14 +1,11 @@
-#include<stdio.h>
-
 #include"headers/matrix.h"
+#include"matrix.c"
 
-int main(){
+int main(void){
 
-int i;
-int j;
-struct matrix m = {3,4};
-char ma[m.x][m.y];
+       struct matrix *matriz = matrix_alloc();
+       inicialize(matriz);
+       represent(matriz);
 
-inicializa(m,ma);
 return 0;
 }
