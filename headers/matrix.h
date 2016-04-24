@@ -5,8 +5,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdint.h>
-#define TAMX 9
-#define TAMY 9
+#include <unistd.h>
 
 struct matrix;
 

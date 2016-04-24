@@ -4,7 +4,9 @@
 
 
 struct matrix {
-	bool state[2][TAMX][TAMY];
+	int maxx;
+	int maxy;
+	bool state[2][1000][1000];
 	bool evolution;
 	uint32_t flags;
 
@@ -12,26 +14,38 @@ struct matrix {
 
 enum matrix_attr {
 	MATRIX_STATE,
-	MATRIX_EVO
+	MATRIX_EVO,
+	MATRIX_MAXX,
+	MATRIX_MAXY
 };
 
-void inicialize(struct matrix *matriz){
+void inicialize(struct matrix *m){
 	int i;
 	int j;
-	matriz->evolution=0;
-	for (j = 0;j<TAMY;j++){
-		for(i = 0;i<TAMX;i++){
-			matriz->state[matriz->evolution][i][j]=false;
+	m->evolution=0;
+	for (j = 0;j<(m->maxy);j++){
+		for(i = 0;i<(m->maxx);i++){
+			m->state[m->evolution][i][j]=false;
 		}
 	}
 }
+
+struct  matrix *matrix_alloc(int x, int y){
+	struct matrix *m;
+	m = (struct matrix *)malloc(x*y*sizeof(struct matrix));
+	m->flags=0;
+	m->maxx=x;
+	m->maxy=y;
+	return m;
+}
+
 void represent(const struct matrix *m){
 	int i;
 	int j;
 	int z=m->evolution;
 	printf("\n\n");
-	for (j = 0;j<TAMY;j++){
-		for(i = 0;i<TAMX;i++){
+	for (j = 0;j<(m->maxy);j++){
+		for(i = 0;i<(m->maxx);i++){
 			if(m->state[z][i][j]){
 				printf("[X]");
 			}else {
@@ -43,7 +57,7 @@ void represent(const struct matrix *m){
 }
 
 int returnLimits(int a, const struct matrix *m){
-	if(a ==TAMX-1 || a==TAMY-1){
+	if(a ==(m->maxx)-1 || a==(m->maxy)-1){
 		return a-1;
 	}else if(a==0){
 		return a+1;
@@ -56,13 +70,13 @@ int livingCellsAround(int z,int i, int j, const struct matrix *m){
 	int a = 0;
 	int j1=returnLimits(j,m);
 	int i1=returnLimits(i,m);
-	if(i==TAMX-1 || i==0){
+	if(i==(m->maxx)-1 || i==0){
 		a += m->state[z][i][j-1];
 		a += m->state[z][i1][j];
 		a += m->state[z][i1][j-1];
 		a += m->state[z][i][j+1];
 		a += m->state[z][i1][j+1];
-	}else if(j==TAMY-1||j==0){
+	}else if(j==(m->maxy)-1||j==0){
 		a += m->state[z][i-1][j];
 		a += m->state[z][i+1][j];
 		a += m->state[z][i][j1];
@@ -110,8 +124,8 @@ void evolve(struct matrix *m){
 	int i;
 	int j;
 	int a = m->evolution;
-	for (j = 0;j<TAMY;j++){
-		for(i = 0;i<TAMX;i++){
+	for (j = 0;j<(m->maxy);j++){
+		for(i = 0;i<(m->maxx);i++){
 			darwin(i,j,m);
 		}
 	}
@@ -119,12 +133,7 @@ void evolve(struct matrix *m){
 	}
 
 
-struct  matrix *matrix_alloc(){
-	struct matrix *m;
-	m = (struct matrix *)malloc(TAMX*TAMY*sizeof(struct matrix));
-	m->flags=0;
-	return m;
-}
+
 
 void matrix_free(struct matrix *m){
 	if(ATTR_IS_SET(m->flags,MATRIX_STATE))
@@ -138,6 +147,7 @@ void matrix_free(struct matrix *m){
 void matrix_set_state(struct matrix *m,int z,int i, int j, bool state){
 	if(ATTR_IS_SET(m->flags,MATRIX_STATE))
 	free((int*)m->state[z][i][j]);
+	if(i<m->maxx && j<m->maxy)
 	m->state[z][i][j]=state;
 	ATTR_SET(m->flags,MATRIX_STATE);
 }
@@ -147,6 +157,20 @@ void matrix_set_evolution(struct matrix *m, bool evo){
 	free((int*)m->evolution);
 	m->evolution=evo;
 	ATTR_SET(m->flags,MATRIX_EVO);
+}
+
+void matrix_set_maxX(struct matrix *m,int a){
+	if(ATTR_IS_SET(m->flags,MATRIX_MAXX))
+	free((int*)(m->maxx*sizeof(m->maxx)));
+	m->maxx=a;
+	ATTR_SET(m->flags,MATRIX_MAXX);
+}
+
+void matrix_set_maxY(struct matrix *m, int a){
+	if(ATTR_IS_SET(m->flags,MATRIX_MAXY))
+	free((int*)(m->maxy*sizeof(m->maxy)));
+	m->maxy=a;
+	ATTR_SET(m->flags,MATRIX_MAXY);
 }
 
 bool matrix_get_state(const struct matrix *m, int z, int i, int j){
@@ -161,4 +185,20 @@ bool matrix_get_evolution(const struct matrix *m){
 	return m->evolution;
 	else
 	return NULL;
+}
+
+
+int matrix_get_maxx(const struct matrix *m){
+	if(ATTR_IS_SET(m->flags, MATRIX_MAXX))
+	return m->maxx;
+	else
+	return 0;
+}
+
+
+int matrix_get_maxy(const struct matrix *m){
+	if(ATTR_IS_SET(m->flags, MATRIX_MAXY))
+	return m->maxy;
+	else
+	return 0;
 }
