@@ -86,7 +86,7 @@ static void darwin(int i, int j, struct matrix *m)
 {
 	int evo = m->evolution;
 	int a = livingCellsAround(i, j, m);
-	int z = (evo + 1) % 2;
+	int z = !evo;
 	if(m->state[evo][i][j] == true){
 		m->state[z][i][j] = a > 1 && a < 4;
 	}else{
@@ -104,7 +104,7 @@ void matrix_evolve(struct matrix *m)
 		for(i = 0; i < (m->maxx); i++)
 		darwin(i, j, m);
 	}
-	m->evolution = (a + 1) % 2;
+	m->evolution = !m->evolution;
 }
 
 void matrix_free(struct matrix *m)
