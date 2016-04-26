@@ -1,4 +1,5 @@
 #include"headers/matrix.h"
+#include<getopt.h>
 
 void test1();
 void test2();
@@ -6,7 +7,18 @@ void test3();
 
 int main(int argc, char *argv[]){
         int c,x,y,n;
-        while((c=getopt(argc, argv, "x:y:n:e:"))!=-1){
+        int option_index = 0;
+
+        static struct option long_options[] =
+        {
+                {"X", required_argument, 0, 'x'},
+                {"Y", required_argument, 0, 'y'},
+                {"evo", required_argument, 0, 'n'},
+                {0,0,0,0}
+        };
+
+        while((c=getopt_long(argc, argv, "x:y:n:",long_options,&option_index))!=-1)
+        {
                 switch(c){
                         case'x':
                         //tamaño en el eje X
@@ -20,8 +32,14 @@ int main(int argc, char *argv[]){
                         //numero de test
                         n = strtol(optarg, NULL,0);
                         break;
+                        case '?':
+                        break;
+                        default:
+                        printf("ERROR\n");
+                        break;
                 }
         }
+
 
         //test1(x,y,n);
         //test2(x,y,n);
