@@ -1,12 +1,14 @@
 #include"headers/matrix.h"
 #define ATTR_SET(flags, attr) (flags)|= (1 << (attr))
 #define ATTR_IS_SET(flags, attr) ((flags) & (1 << (attr)))
+#define X 100
+#define Y 100
 
-
-struct matrix {
+struct matrix
+{
 	int maxx;
 	int maxy;
-	bool state[2][1000][1000];
+	bool state[2][X][Y];
 	bool evolution;
 	uint32_t flags;
 
@@ -19,36 +21,36 @@ enum matrix_attr {
 	MATRIX_MAXY
 };
 
-void inicialize(struct matrix *m){
-	int i;
-	int j;
+void matrix_inicialize(struct matrix *m)
+{
+	int i,j;
 	m->evolution=0;
-	for (j = 0;j<(m->maxy);j++){
-		for(i = 0;i<(m->maxx);i++){
-			m->state[m->evolution][i][j]=false;
-		}
+	for (j = 0; j < m->maxy; j++){
+		for(i = 0; i < m->maxx; i++)
+		m->state[m->evolution][i][j] = false;
 	}
 }
 
-struct  matrix *matrix_alloc(int x, int y){
+struct  matrix *matrix_alloc(int x, int y)
+{
 	struct matrix *m;
-	m = (struct matrix *)malloc(x*y*sizeof(struct matrix));
-	m->flags=0;
-	m->maxx=x;
-	m->maxy=y;
+	m = (struct matrix *) malloc( x * y * sizeof(struct matrix));
+	m->flags = 0;
+	m->maxx = x;
+	m->maxy = y;
 	return m;
 }
 
-void represent(const struct matrix *m){
-	int i;
-	int j;
-	int z=m->evolution;
+void matrix_represent(const struct matrix *m)
+{
+	int i, j;
+	int z = m->evolution;
 	printf("\n\n");
-	for (j = 0;j<(m->maxy);j++){
-		for(i = 0;i<(m->maxx);i++){
+	for (j = 0; j < (m->maxy); j++){
+		for(i = 0; i < (m->maxx); i++){
 			if(m->state[z][i][j]){
 				printf("[X]");
-			}else {
+			}else{
 				printf("[ ]");
 			}
 		}
@@ -56,147 +58,110 @@ void represent(const struct matrix *m){
 	}
 }
 
-int returnLimits(int a, const struct matrix *m){
-	if(a ==(m->maxx)-1 || a==(m->maxy)-1){
-		return a-1;
-	}else if(a==0){
-		return a+1;
+int checkCell(int i , int j, const struct matrix *m){
+	if(i < 0 || i > m->maxx || j < 0 || j > m->maxy){
+		return false;
+	}else{
+		return m->state[m->evolution][i][j];
 	}
 }
 
-
-
-int livingCellsAround(int z,int i, int j, const struct matrix *m){
+int livingCellsAround(int i, int j, const struct matrix *m)
+{
 	int a = 0;
-	int j1=returnLimits(j,m);
-	int i1=returnLimits(i,m);
-	if(i==(m->maxx)-1 || i==0){
-		a += m->state[z][i][j-1];
-		a += m->state[z][i1][j];
-		a += m->state[z][i1][j-1];
-		a += m->state[z][i][j+1];
-		a += m->state[z][i1][j+1];
-	}else if(j==(m->maxy)-1||j==0){
-		a += m->state[z][i-1][j];
-		a += m->state[z][i+1][j];
-		a += m->state[z][i][j1];
-		a += m->state[z][i+1][j1];
-		a += m->state[z][i-1][j1];
-	}else{
-		a += m->state[z][i][j-1];
-		a += m->state[z][i-1][j];
-		a += m->state[z][i-1][j-1];
-		a += m->state[z][i][j+1];
-		a += m->state[z][i+1][j];
-		a += m->state[z][i+1][j+1];
-		a += m->state[z][i-1][j+1];
-		a += m->state[z][i+1][j-1];
-	}
+
+	a += checkCell(i,j-1,m);
+	a += checkCell(i-1,j,m);
+	a += checkCell(i-1,j-1,m);
+	a += checkCell(i,j+1,m);
+	a += checkCell(i+1,j,m);
+	a += checkCell(i+1,j+1,m);
+	a += checkCell(i-1,j+1,m);
+	a += checkCell(i+1,j-1,m);
+
 	return a;
 }
 
-/*si la cell viva sigue viviendo si tiene 2 o 3 cell vecinas vivas.
-Si esta muerta, nace si tiene exactamente 3 cells vecinas vivas*/
-
-
-
-void darwin(int i, int j, struct matrix *m){
+static void darwin(int i, int j, struct matrix *m)
+{
 	int evo = m->evolution;
-	int a = livingCellsAround(evo,i,j,m);
-	int z = (evo +1)%2;
-	if(m->state[evo][i][j]==true){
-		if(a<=1||a>=4){
-			m->state[z][i][j]=false;
-		}else{
-			m->state[z][i][j]=true;
-		}
+	int a = livingCellsAround(i, j, m);
+	int z = (evo + 1) % 2;
+	if(m->state[evo][i][j] == true){
+		m->state[z][i][j] = a > 1 && a < 4;
 	}else{
-		if(a==3){
-			m->state[z][i][j]=true;
-		}else{
-			m->state[z][i][j]=false;
-		}
+		m->state[z][i][j] = a == 3;
 	}
 
 }
 
-void evolve(struct matrix *m){
+void matrix_evolve(struct matrix *m)
+{
 	int i;
 	int j;
 	int a = m->evolution;
-	for (j = 0;j<(m->maxy);j++){
-		for(i = 0;i<(m->maxx);i++){
-			darwin(i,j,m);
-		}
+	for (j = 0; j < (m->maxy); j++){
+		for(i = 0; i < (m->maxx); i++)
+		darwin(i, j, m);
 	}
-		m->evolution=(a+1)%2;
-	}
+	m->evolution = (a + 1) % 2;
+}
 
-
-
-
-void matrix_free(struct matrix *m){
-	if(ATTR_IS_SET(m->flags,MATRIX_STATE))
+void matrix_free(struct matrix *m)
+{
+	if(ATTR_IS_SET(m->flags, MATRIX_STATE))
 	free(m->state);
-	if(ATTR_IS_SET(m->flags,MATRIX_EVO))
+	if(ATTR_IS_SET(m->flags, MATRIX_EVO))
 	free((int*)m->evolution);
 	free(m);
 }
 
 
-void matrix_set_state(struct matrix *m,int z,int i, int j, bool state){
+void matrix_set_state(struct matrix *m,int i, int j, bool state)
+{
+	int z = m->evolution;
 	if(ATTR_IS_SET(m->flags,MATRIX_STATE))
 	free((int*)m->state[z][i][j]);
-	if(i<m->maxx && j<m->maxy)
-	m->state[z][i][j]=state;
+	if(i < m->maxx && j < m->maxy)
+	m->state[z][i][j] = state;
 	ATTR_SET(m->flags,MATRIX_STATE);
 }
 
-void matrix_set_evolution(struct matrix *m, bool evo){
-	if(ATTR_IS_SET(m->flags,MATRIX_EVO))
-	free((int*)m->evolution);
-	m->evolution=evo;
-	ATTR_SET(m->flags,MATRIX_EVO);
-}
-
-void matrix_set_maxX(struct matrix *m,int a){
+void matrix_set_maxX(struct matrix *m,int a)
+{
 	if(ATTR_IS_SET(m->flags,MATRIX_MAXX))
-	free((int*)(m->maxx*sizeof(m->maxx)));
-	m->maxx=a;
+	free((int*)(m->maxx * sizeof(m->maxx)));
+	m->maxx = a;
 	ATTR_SET(m->flags,MATRIX_MAXX);
 }
 
-void matrix_set_maxY(struct matrix *m, int a){
+void matrix_set_maxY(struct matrix *m, int a)
+{
 	if(ATTR_IS_SET(m->flags,MATRIX_MAXY))
-	free((int*)(m->maxy*sizeof(m->maxy)));
-	m->maxy=a;
+	free((int*)(m->maxy * sizeof(m->maxy)));
+	m->maxy = a;
 	ATTR_SET(m->flags,MATRIX_MAXY);
 }
 
-bool matrix_get_state(const struct matrix *m, int z, int i, int j){
+bool matrix_get_state(const struct matrix *m, int z, int i, int j)
+{
 	if(ATTR_IS_SET(m->flags, MATRIX_STATE))
+	if(i < m->maxx && j < m->maxy)
 	return m->state[z][i][j];
 	else
 	return NULL;
 }
 
-bool matrix_get_evolution(const struct matrix *m){
-	if(ATTR_IS_SET(m->flags, MATRIX_EVO))
-	return m->evolution;
-	else
-	return NULL;
-}
-
-
-int matrix_get_maxx(const struct matrix *m){
+int matrix_get_maxx(const struct matrix *m)
+{
 	if(ATTR_IS_SET(m->flags, MATRIX_MAXX))
 	return m->maxx;
 	else
 	return 0;
 }
 
-
-int matrix_get_maxy(const struct matrix *m){
+int matrix_get_maxy(const struct matrix *m)
+{
 	if(ATTR_IS_SET(m->flags, MATRIX_MAXY))
 	return m->maxy;
 	else
