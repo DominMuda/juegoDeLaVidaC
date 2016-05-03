@@ -7,7 +7,7 @@ mi_proy:main.o matrix.o
 main.o:main.c matrix.o
 	gcc -c main.c
 
-matrix.o: headers/matrix.h matrix.c
+matrix.o: headers/matrix.h headers/list.h matrix.c
 	gcc -c matrix.c
 
 clean:

@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 struct matrix;
+struct state;
 
 void inicialize(struct matrix *m);
 void matrix_represent(const struct matrix *m);
@@ -15,5 +16,6 @@ int livingCellsAround(int i, int j, const struct matrix *m);
 void matrix_evolve( struct matrix *m);
 
 struct matrix *matrix_alloc();
+struct state *state_alloc();
 
 #endif

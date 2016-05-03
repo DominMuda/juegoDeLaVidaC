@@ -1,15 +1,23 @@
 #include"headers/matrix.h"
+#include"headers/list.h"
 #include<getopt.h>
 
 void test1();
 void test2();
 void test3();
 
-int main(int argc, char *argv[]){
+int main(int argc, char *argv[])
+{
         int c,x,y,n;
         int option_index = 0;
 
-        static struct option long_options[] =
+        struct matrix *m = matrix_alloc(6,6);
+        struct list_head list;
+        struct state *st;
+
+
+
+        /*static struct option long_options[] =
         {
                 {"X", required_argument, 0, 'x'},
                 {"Y", required_argument, 0, 'y'},
@@ -20,7 +28,7 @@ int main(int argc, char *argv[]){
         while((c=getopt_long(argc, argv, "x:y:n:",long_options,&option_index))!=-1)
         {
                 switch(c){
-                        case'x':
+                case'x':
                         //tamaño en el eje X
                         x = strtol(optarg, NULL,0);
                         break;
@@ -41,14 +49,16 @@ int main(int argc, char *argv[]){
         }
 
 
-        //test1(x,y,n);
-        //test2(x,y,n);
+        test1(x,y,n);
+        test2(x,y,n);
         test3(x,y,n);
+        */
 
         return EXIT_SUCCESS;
 }
 
-void test1(int x, int y,int n){
+void test1(int x, int y,int n)
+{
         int i, j, cont;
         struct matrix *m = matrix_alloc(x,y);
         matrix_inicialize(m);
@@ -67,7 +77,8 @@ void test1(int x, int y,int n){
         matrix_represent(m);
 }
 
-void test2(int x, int y,int n){
+void test2(int x, int y,int n)
+{
         int i, j, cont;
         struct matrix *m = matrix_alloc(x,y);
         matrix_inicialize(m);
@@ -88,7 +99,8 @@ void test2(int x, int y,int n){
         matrix_represent(m);
 }
 
-void test3(int x, int y,int n){
+void test3(int x, int y,int n)
+{
         int i, j, cont;
         struct matrix *m = matrix_alloc(x,y);
         matrix_inicialize(m);
