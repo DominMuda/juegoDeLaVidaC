@@ -1,36 +1,56 @@
 #include"headers/matrix.h"
+#include<getopt.h>
 
 void test1();
 void test2();
 void test3();
 
-int main(int argc, char *argv[]){
-        int c,x,y,n;
-        while((c=getopt(argc, argv, "x:y:n:e:"))!=-1){
+int main(int argc, char *argv[])
+{
+        //int c,x,y,n;
+        //int option_index = 0;
+
+        /*static struct option long_options[] =
+        {
+                {"X", required_argument, 0, 'x'},
+                {"Y", required_argument, 0, 'y'},
+                {"evo", required_argument, 0, 'n'},
+                {0,0,0,0}
+        };
+
+        while((c=getopt_long(argc, argv, "x:y:n:",long_options,&option_index))!=-1)
+        {
                 switch(c){
-                        case'x':
+                case'x':
                         //tamaño en el eje X
                         x = strtol(optarg, NULL,0);
                         break;
-                        case'y':
+                case'y':
                         //tamaño en el eje Y
                         y = strtol(optarg, NULL,0);
                         break;
-                        case'n':
+                case'n':
                         //numero de test
                         n = strtol(optarg, NULL,0);
                         break;
+                case '?':
+                        break;
+                default:
+                        printf("ERROR\n");
+                        break;
                 }
         }
+        */
 
         //test1(x,y,n);
         //test2(x,y,n);
-        test3(x,y,n);
+        test3(6,6,4);
 
         return EXIT_SUCCESS;
 }
 
-void test1(int x, int y,int n){
+void test1(int x, int y,int n)
+{
         int i, j, cont;
         struct matrix *m = matrix_alloc(x,y);
         matrix_inicialize(m);
@@ -42,11 +62,14 @@ void test1(int x, int y,int n){
         matrix_set_state(m, 4, 5, true);
         matrix_set_state(m, 5, 5, true);
 
-        for(cont = 0 ; cont < n; cont++){
-                matrix_represent(m);
-                matrix_evolve(m);
-        }
+        if(matrix_is_defined(m))
+                for(cont = 0 ; cont < n; cont++)
+                {
+                        matrix_represent(m);
+                        matrix_evolve(m);
+                }
         matrix_represent(m);
+        matrix_free(m);
 }
 
 void test2(int x, int y,int n){
@@ -63,14 +86,18 @@ void test2(int x, int y,int n){
         matrix_set_state(m, 4, 6, true);
         matrix_set_state(m, 8, 6, true);
 
-        for(cont = 0 ; cont < n; cont++){
-                matrix_represent(m);
-                matrix_evolve(m);
-        }
+        if(matrix_is_defined(m))
+                for(cont = 0 ; cont < n; cont++)
+                {
+                        matrix_represent(m);
+                        matrix_evolve(m);
+                }
         matrix_represent(m);
+        matrix_free(m);
 }
 
-void test3(int x, int y,int n){
+void test3(int x, int y,int n)
+{
         int i, j, cont;
         struct matrix *m = matrix_alloc(x,y);
         matrix_inicialize(m);
@@ -88,9 +115,12 @@ void test3(int x, int y,int n){
         matrix_set_state(m, 5, 0, true);
         matrix_set_state(m, 5, 5, true);
 
-        for(cont = 0 ; cont < n; cont++){
-                matrix_represent(m);
-                matrix_evolve(m);
-        }
+        if(matrix_is_defined(m))
+                for(cont = 0 ; cont < n; cont++)
+                {
+                        matrix_represent(m);
+                        matrix_evolve(m);
+                }
         matrix_represent(m);
+        matrix_free(m);
 }
