@@ -20,8 +20,12 @@ int main(int argc, char *argv[])
 
         while((c=getopt_long(argc, argv, "x:y:n:",long_options,&option_index))!=-1)
         {
+<<<<<<< HEAD
                 switch(c)
                         {
+=======
+                switch(c){
+>>>>>>> 788d57ec880c632b04d5accc5e69b0628fa5df59
                         case'x':
                                 x = strtol(optarg, NULL,0);
                                 break;
@@ -36,8 +40,14 @@ int main(int argc, char *argv[])
                         default:
                                 printf("ERROR\n");
                         break;
+                        case '?':
+                        break;
+                        default:
+                        printf("ERROR\n");
+                        break;
                 }
         }
+
 
         //test1(x,y,n);
         //test2(x,y,n);
