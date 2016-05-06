@@ -1,5 +1,5 @@
-#include"headers/matrix.h"
-#include<getopt.h>
+#include "headers/matrix.h"
+#include <getopt.h>
 
 void test1();
 void test2();
@@ -18,14 +18,9 @@ int main(int argc, char *argv[])
                 {0,0,0,0}
         };
 
-        while((c=getopt_long(argc, argv, "x:y:n:",long_options,&option_index))!=-1)
-        {
-<<<<<<< HEAD
-                switch(c)
+        while ((c = getopt_long(argc, argv, "x:y:n:",long_options,&option_index)) != -1) {
+                switch (c)
                         {
-=======
-                switch(c){
->>>>>>> 788d57ec880c632b04d5accc5e69b0628fa5df59
                         case'x':
                                 x = strtol(optarg, NULL,0);
                                 break;
@@ -39,16 +34,9 @@ int main(int argc, char *argv[])
                                 break;
                         default:
                                 printf("ERROR\n");
-                        break;
-                        case '?':
-                        break;
-                        default:
-                        printf("ERROR\n");
-                        break;
+                                break;
                 }
         }
-
-
         //test1(x,y,n);
         //test2(x,y,n);
         test3(6,6,4);
@@ -64,15 +52,14 @@ void test1(int x, int y,int n)
 
         matrix_set_state(m, 4, 2, true);
         matrix_set_state(m, 3, 3, true);
-        matrix_set_state(m, 5,        matrix_set_state(m, 5, 5, true);
- 3, true);
+        matrix_set_state(m, 5, 3, true);
+        matrix_set_state(m, 5, 5, true);
         matrix_set_state(m, 3, 5, true);
         matrix_set_state(m, 4, 5, true);
         matrix_set_state(m, 5, 5, true);
 
         if(matrix_is_defined(m))
-                for(cont = 0 ; cont < n; cont++)
-                {
+                for(cont = 0 ; cont < n; cont++){
                         matrix_represent(m);
                         matrix_evolve(m);
                 }
@@ -95,8 +82,7 @@ void test2(int x, int y,int n){
         matrix_set_state(m, 8, 6, true);
 
         if(matrix_is_defined(m))
-                for(cont = 0 ; cont < n; cont++)
-                {
+                for(cont = 0 ; cont < n; cont++){
                         matrix_represent(m);
                         matrix_evolve(m);
                 }
@@ -124,8 +110,7 @@ void test3(int x, int y,int n)
         matrix_set_state(m, 5, 5, true);
 
         if(matrix_is_defined(m))
-                for(cont = 0 ; cont < n; cont++)
-                {
+                for(cont = 0 ; cont < n; cont++){
                         matrix_represent(m);
                         matrix_evolve(m);
                 }
