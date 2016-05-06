@@ -7,10 +7,10 @@ void test3();
 
 int main(int argc, char *argv[])
 {
-        //int c,x,y,n;
-        //int option_index = 0;
+        int c,x,y,n;
+        int option_index = 0;
 
-        /*static struct option long_options[] =
+        static struct option long_options[] =
         {
                 {"X", required_argument, 0, 'x'},
                 {"Y", required_argument, 0, 'y'},
@@ -20,27 +20,24 @@ int main(int argc, char *argv[])
 
         while((c=getopt_long(argc, argv, "x:y:n:",long_options,&option_index))!=-1)
         {
-                switch(c){
-                case'x':
-                        //tamaño en el eje X
-                        x = strtol(optarg, NULL,0);
-                        break;
-                case'y':
-                        //tamaño en el eje Y
-                        y = strtol(optarg, NULL,0);
-                        break;
-                case'n':
-                        //numero de test
-                        n = strtol(optarg, NULL,0);
-                        break;
-                case '?':
-                        break;
-                default:
-                        printf("ERROR\n");
+                switch(c)
+                        {
+                        case'x':
+                                x = strtol(optarg, NULL,0);
+                                break;
+                        case'y':
+                                y = strtol(optarg, NULL,0);
+                                break;
+                        case'n':
+                                n = strtol(optarg, NULL,0);
+                                break;
+                        case '?':
+                                break;
+                        default:
+                                printf("ERROR\n");
                         break;
                 }
         }
-        */
 
         //test1(x,y,n);
         //test2(x,y,n);
@@ -57,7 +54,8 @@ void test1(int x, int y,int n)
 
         matrix_set_state(m, 4, 2, true);
         matrix_set_state(m, 3, 3, true);
-        matrix_set_state(m, 5, 3, true);
+        matrix_set_state(m, 5,        matrix_set_state(m, 5, 5, true);
+ 3, true);
         matrix_set_state(m, 3, 5, true);
         matrix_set_state(m, 4, 5, true);
         matrix_set_state(m, 5, 5, true);
