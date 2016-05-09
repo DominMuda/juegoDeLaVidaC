@@ -33,7 +33,7 @@ void matrix_inicialize(struct matrix *m)
 struct  matrix *matrix_alloc(int x, int y)
 {
 	struct matrix *m;
-	m = (struct matrix *) malloc( x * y * sizeof(struct matrix));
+	m = (struct matrix *) malloc(sizeof(struct matrix));
 	m->flags = 0;
 	m->maxx = x;
 	m->maxy = y;
