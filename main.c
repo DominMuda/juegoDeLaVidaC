@@ -58,13 +58,14 @@ void test1(int x, int y,int n)
         matrix_set_state(m, 4, 5, true);
         matrix_set_state(m, 5, 5, true);
 
-        if(matrix_is_defined(m))
+        if(m!=NULL){
                 for(cont = 0 ; cont < n; cont++){
                         matrix_represent(m);
                         matrix_evolve(m);
                 }
-        matrix_represent(m);
-        matrix_free(m);
+                matrix_represent(m);
+                matrix_free(m);
+        }
 }
 
 void test2(int x, int y,int n){
@@ -81,13 +82,14 @@ void test2(int x, int y,int n){
         matrix_set_state(m, 4, 6, true);
         matrix_set_state(m, 8, 6, true);
 
-        if(matrix_is_defined(m))
+        if(m!=NULL){
                 for(cont = 0 ; cont < n; cont++){
                         matrix_represent(m);
                         matrix_evolve(m);
                 }
-        matrix_represent(m);
-        matrix_free(m);
+                matrix_represent(m);
+                matrix_free(m);
+        }
 }
 
 void test3(int x, int y,int n)
@@ -109,11 +111,12 @@ void test3(int x, int y,int n)
         matrix_set_state(m, 5, 0, true);
         matrix_set_state(m, 5, 5, true);
 
-        if(matrix_is_defined(m))
+        if(m!=NULL){
                 for(cont = 0 ; cont < n; cont++){
                         matrix_represent(m);
                         matrix_evolve(m);
                 }
-        matrix_represent(m);
-        matrix_free(m);
+                matrix_represent(m);
+                matrix_free(m);
+        }
 }

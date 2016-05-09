@@ -24,9 +24,9 @@ void matrix_inicialize(struct matrix *m)
 {
 	int i,j;
 	m->evolution=0;
-	for (j = 0; j < m->maxy; j++){
-		for(i = 0; i < m->maxx; i++)
-			m->state[m->evolution][i][j] = false;
+	for(i = 0; i < m->maxx; i++){
+		for (j = 0; j < m->maxy; j++)
+		m->state[m->evolution][i][j] = false;
 	}
 }
 
@@ -34,9 +34,11 @@ struct  matrix *matrix_alloc(int x, int y)
 {
 	struct matrix *m;
 	m = (struct matrix *) malloc(sizeof(struct matrix));
-	m->flags = 0;
-	m->maxx = x;
-	m->maxy = y;
+	if(m != NULL){
+		m->flags = 0;
+		m->maxx = x;
+		m->maxy = y;
+	}
 	return m;
 }
 
@@ -55,12 +57,6 @@ void matrix_represent(const struct matrix *m)
 		printf("\n");
 	}
 }
-
-bool matrix_is_defined(const struct matrix *m)
-{
-	return ATTR_IS_SET(m->flags, MATRIX_STATE);
-}
-
 
 int checkCell(int i , int j, const struct matrix *m){
 	if(i < 0 || i > m->maxx || j < 0 || j > m->maxy)
@@ -87,10 +83,9 @@ int livingCellsAround(int i, int j, const struct matrix *m)
 
 static void darwin(int i, int j, struct matrix *m)
 {
-	int evo = m->evolution;
 	int a = livingCellsAround(i, j, m);
-	int z = !evo;
-	if(m->state[evo][i][j] == true)
+	int z = !(m->evolution);
+	if(m->state[m->evolution][i][j] == true)
 		m->state[z][i][j] = a > 1 && a < 4;
 	else
 		m->state[z][i][j] = a == 3;
@@ -113,25 +108,12 @@ void matrix_free(struct matrix *m)
 	free(m);
 }
 
-
 void matrix_set_state(struct matrix *m,int i, int j, bool state)
 {
 	int z = m->evolution;
 	if(i < m->maxx && j < m->maxy)
 		m->state[z][i][j] = state;
 	ATTR_SET(m->flags,MATRIX_STATE);
-}
-
-void matrix_set_maxX(struct matrix *m,int a)
-{
-	m->maxx = a;
-	ATTR_SET(m->flags,MATRIX_MAXX);
-}
-
-void matrix_set_maxY(struct matrix *m, int a)
-{
-	m->maxy = a;
-	ATTR_SET(m->flags,MATRIX_MAXY);
 }
 
 bool matrix_get_state(const struct matrix *m, int z, int i, int j)
