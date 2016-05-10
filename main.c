@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
         }
         //test1(x,y,n);
         //test2(x,y,n);
-        test3(6,6,4);
+        test3(6,6,5);
 
         return EXIT_SUCCESS;
 }
@@ -49,6 +49,7 @@ void test1(int x, int y,int n)
         int i, j, cont;
         struct matrix *m = matrix_alloc(x,y);
         matrix_inicialize(m);
+        matrix_represent(m);
 
         matrix_set_state(m, 4, 2, true);
         matrix_set_state(m, 3, 3, true);

@@ -8,7 +8,7 @@ struct matrix
 {
 	int maxx;
 	int maxy;
-	bool state[2][X][Y];
+	bool *state;
 	bool evolution;
 	uint32_t flags;
 };
@@ -26,11 +26,11 @@ void matrix_inicialize(struct matrix *m)
 	m->evolution=0;
 	for(i = 0; i < m->maxx; i++){
 		for (j = 0; j < m->maxy; j++)
-		m->state[m->evolution][i][j] = false;
+			*(m->state + i * m->maxy + j) = false;
 	}
 }
 
-struct  matrix *matrix_alloc(int x, int y)
+struct matrix *matrix_alloc(int x, int y)
 {
 	struct matrix *m;
 	m = (struct matrix *) malloc(sizeof(struct matrix));
@@ -38,6 +38,7 @@ struct  matrix *matrix_alloc(int x, int y)
 		m->flags = 0;
 		m->maxx = x;
 		m->maxy = y;
+		m->state = (bool *) malloc( 2 * x * y * sizeof(bool));
 	}
 	return m;
 }
@@ -49,7 +50,7 @@ void matrix_represent(const struct matrix *m)
 	printf("\n\n");
 	for (j = 0; j < (m->maxy); j++){
 		for(i = 0; i < (m->maxx); i++){
-			if(m->state[z][i][j])
+			if(*(m->state + (z* m->maxx * m-> maxy) +i * m->maxy + j))
 				printf("[X]");
 			else
 				printf("[ ]");
@@ -59,10 +60,11 @@ void matrix_represent(const struct matrix *m)
 }
 
 int checkCell(int i , int j, const struct matrix *m){
-	if(i < 0 || i > m->maxx || j < 0 || j > m->maxy)
+	int z = m->evolution;
+	if(i < 0 || i >= m->maxx || j < 0 || j >= m->maxy)
 		return false;
 	else
-		return m->state[m->evolution][i][j];
+		return *(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j);
 }
 
 int livingCellsAround(int i, int j, const struct matrix *m)
@@ -85,10 +87,10 @@ static void darwin(int i, int j, struct matrix *m)
 {
 	int a = livingCellsAround(i, j, m);
 	int z = !(m->evolution);
-	if(m->state[m->evolution][i][j] == true)
-		m->state[z][i][j] = a > 1 && a < 4;
+	if(*(m->state + i * m->maxy + j) == true)
+		*(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j) = a > 1 && a < 4;
 	else
-		m->state[z][i][j] = a == 3;
+		*(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j) = a == 3;
 }
 
 void matrix_evolve(struct matrix *m)
@@ -112,7 +114,7 @@ void matrix_set_state(struct matrix *m,int i, int j, bool state)
 {
 	int z = m->evolution;
 	if(i < m->maxx && j < m->maxy)
-		m->state[z][i][j] = state;
+		*(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j) = state;
 	ATTR_SET(m->flags,MATRIX_STATE);
 }
 
@@ -120,7 +122,7 @@ bool matrix_get_state(const struct matrix *m, int z, int i, int j)
 {
 	if(ATTR_IS_SET(m->flags, MATRIX_STATE))
 		if(i < m->maxx && j < m->maxy)
-			return m->state[z][i][j];
+			return *(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j);
 		else
 			return NULL;
 }
