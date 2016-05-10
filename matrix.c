@@ -1,8 +1,6 @@
 #include"headers/matrix.h"
 #define ATTR_SET(flags, attr) (flags)|= (1 << (attr))
 #define ATTR_IS_SET(flags, attr) ((flags) & (1 << (attr)))
-#define X 100
-#define Y 100
 
 struct matrix
 {
@@ -15,7 +13,6 @@ struct matrix
 
 enum matrix_attr {
 	MATRIX_STATE,
-	MATRIX_EVO,
 	MATRIX_MAXX,
 	MATRIX_MAXY
 };
@@ -28,6 +25,10 @@ void matrix_inicialize(struct matrix *m)
 		for (j = 0; j < m->maxy; j++)
 			*(m->state + i * m->maxy + j) = false;
 	}
+
+	ATTR_SET(m->flags,MATRIX_STATE);
+	ATTR_SET(m->flags,MATRIX_MAXX);
+	ATTR_SET(m->flags,MATRIX_MAXY);
 }
 
 struct matrix *matrix_alloc(int x, int y)
@@ -115,7 +116,6 @@ void matrix_set_state(struct matrix *m,int i, int j, bool state)
 	int z = m->evolution;
 	if(i < m->maxx && j < m->maxy)
 		*(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j) = state;
-	ATTR_SET(m->flags,MATRIX_STATE);
 }
 
 bool matrix_get_state(const struct matrix *m, int z, int i, int j)
