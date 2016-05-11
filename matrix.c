@@ -2,6 +2,8 @@
 #define ATTR_SET(flags, attr) (flags)|= (1 << (attr))
 #define ATTR_IS_SET(flags, attr) ((flags) & (1 << (attr)))
 
+
+
 struct matrix
 {
 	int maxx;
@@ -11,11 +13,28 @@ struct matrix
 	uint32_t flags;
 };
 
-enum matrix_attr {
-	MATRIX_STATE,
-	MATRIX_MAXX,
-	MATRIX_MAXY
+enum matrix_attr
+{
+	MATRIX_STATE
 };
+
+void matrix_set_state(struct matrix *m, int i, int j, int z, bool state)
+{
+	if(i < m->maxx && j < m->maxy && i >= 0 && j >= 0)
+		*(m->state + (z * m->maxx * m->maxy) + i * m->maxy + j) = state;
+}
+
+
+
+bool matrix_get_state(const struct matrix *m, int i , int j)
+{
+	int z = m->evolution;
+	if(ATTR_IS_SET(m->flags, MATRIX_STATE))
+		if(i < 0 || i >= m->maxx || j < 0 || j >= m->maxy)
+			return false;
+		else
+			return *(m->state + (z * m->maxx * m->maxy) + i * m->maxy + j);
+}
 
 void matrix_inicialize(struct matrix *m)
 {
@@ -23,12 +42,9 @@ void matrix_inicialize(struct matrix *m)
 	m->evolution=0;
 	for(i = 0; i < m->maxx; i++){
 		for (j = 0; j < m->maxy; j++)
-			*(m->state + i * m->maxy + j) = false;
+			matrix_set_state(m, i, j, m->evolution, false);
 	}
-
 	ATTR_SET(m->flags,MATRIX_STATE);
-	ATTR_SET(m->flags,MATRIX_MAXX);
-	ATTR_SET(m->flags,MATRIX_MAXY);
 }
 
 struct matrix *matrix_alloc(int x, int y)
@@ -51,7 +67,7 @@ void matrix_represent(const struct matrix *m)
 	printf("\n\n");
 	for (j = 0; j < (m->maxy); j++){
 		for(i = 0; i < (m->maxx); i++){
-			if(*(m->state + (z* m->maxx * m-> maxy) +i * m->maxy + j))
+			if(matrix_get_state(m,i,j))
 				printf("[X]");
 			else
 				printf("[ ]");
@@ -60,38 +76,16 @@ void matrix_represent(const struct matrix *m)
 	}
 }
 
-int checkCell(int i , int j, const struct matrix *m){
-	int z = m->evolution;
-	if(i < 0 || i >= m->maxx || j < 0 || j >= m->maxy)
-		return false;
-	else
-		return *(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j);
-}
-
-int livingCellsAround(int i, int j, const struct matrix *m)
-{
-	int a = 0;
-
-	a += checkCell(i,j-1,m);
-	a += checkCell(i-1,j,m);
-	a += checkCell(i-1,j-1,m);
-	a += checkCell(i,j+1,m);
-	a += checkCell(i+1,j,m);
-	a += checkCell(i+1,j+1,m);
-	a += checkCell(i-1,j+1,m);
-	a += checkCell(i+1,j-1,m);
-
-	return a;
-}
+//matrix_set_state(m,i,j,z,a > 1 && a < 4 );
 
 static void darwin(int i, int j, struct matrix *m)
 {
 	int a = livingCellsAround(i, j, m);
-	int z = !(m->evolution);
-	if(*(m->state + i * m->maxy + j) == true)
-		*(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j) = a > 1 && a < 4;
+	int z = (m->evolution);
+	if(matrix_get_state(m,i,j))
+		matrix_set_state(m, i, j, !z, a > 1 && a < 4 );
 	else
-		*(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j) = a == 3;
+		matrix_set_state(m, i, j, !z, a == 3);
 }
 
 void matrix_evolve(struct matrix *m)
@@ -111,34 +105,18 @@ void matrix_free(struct matrix *m)
 	free(m);
 }
 
-void matrix_set_state(struct matrix *m,int i, int j, bool state)
+int livingCellsAround(int i, int j, const struct matrix *m)
 {
-	int z = m->evolution;
-	if(i < m->maxx && j < m->maxy)
-		*(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j) = state;
-}
+	int a = 0;
 
-bool matrix_get_state(const struct matrix *m, int z, int i, int j)
-{
-	if(ATTR_IS_SET(m->flags, MATRIX_STATE))
-		if(i < m->maxx && j < m->maxy)
-			return *(m->state + (z* m->maxx * m->maxy) + i * m->maxy + j);
-		else
-			return NULL;
-}
+	a += matrix_get_state(m,i,j-1);
+	a += matrix_get_state(m,i-1,j);
+	a += matrix_get_state(m,i-1,j-1);
+	a += matrix_get_state(m,i,j+1);
+	a += matrix_get_state(m,i+1,j);
+	a += matrix_get_state(m,i+1,j+1);
+	a += matrix_get_state(m,i-1,j+1);
+	a += matrix_get_state(m,i+1,j-1);
 
-int matrix_get_maxx(const struct matrix *m)
-{
-	if(ATTR_IS_SET(m->flags, MATRIX_MAXX))
-		return m->maxx;
-	else
-		return 0;
-}
-
-int matrix_get_maxy(const struct matrix *m)
-{
-	if(ATTR_IS_SET(m->flags, MATRIX_MAXY))
-		return m->maxy;
-	else
-		return 0;
+	return a;
 }
