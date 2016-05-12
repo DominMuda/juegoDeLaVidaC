@@ -48,7 +48,10 @@ void test1(int x, int y,int n)
 {
         int i, j, cont;
         struct matrix *m = matrix_alloc(x,y);
-        if(m!=NULL){
+
+        if(m==NULL){
+                perror("ERROR : ");
+        }else{
                 matrix_inicialize(m);
 
                 liveOrDie(m, 4, 2, true);
@@ -71,7 +74,10 @@ void test1(int x, int y,int n)
 void test2(int x, int y,int n){
         int i, j, cont;
         struct matrix *m = matrix_alloc(x,y);
-        if(m!=NULL){
+
+        if(m==NULL){
+                perror("ERROR : ");
+        }else{
                 matrix_inicialize(m);
 
                 liveOrDie(m, 6, 4, true);
@@ -96,7 +102,10 @@ void test3(int x, int y,int n)
 {
         int i, j, cont;
         struct matrix *m = matrix_alloc(x,y);
-        if(m!=NULL){
+
+        if(m==NULL){
+                perror("ERROR : ");
+        }else{
                 matrix_inicialize(m);
 
                 liveOrDie(m, 0, 0, true);
