@@ -13,7 +13,7 @@ void inicialize(struct matrix *m);
 void matrix_represent(const struct matrix *m);
 int livingCellsAround(int i, int j, const struct matrix *m);
 void matrix_evolve( struct matrix *m);
-bool matrix_is_defined(const struct matrix *m);
+void liveOrDie(struct matrix *m, int i, int j, bool state);
 
 struct matrix *matrix_alloc();
 void matrix_free(struct matrix *m);

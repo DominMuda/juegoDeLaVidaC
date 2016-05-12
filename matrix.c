@@ -2,8 +2,6 @@
 #define ATTR_SET(flags, attr) (flags)|= (1 << (attr))
 #define ATTR_IS_SET(flags, attr) ((flags) & (1 << (attr)))
 
-
-
 struct matrix
 {
 	int maxx;
@@ -18,7 +16,7 @@ enum matrix_attr
 	MATRIX_STATE
 };
 
-void matrix_set_state(struct matrix *m, int i, int j, int z, bool state)
+void static matrix_set_state(struct matrix *m, int i, int j, int z, bool state)
 {
 	if(i < m->maxx && j < m->maxy && i >= 0 && j >= 0)
 		*(m->state + (z * m->maxx * m->maxy) + i * m->maxy + j) = state;
@@ -36,13 +34,18 @@ bool matrix_get_state(const struct matrix *m, int i , int j)
 			return *(m->state + (z * m->maxx * m->maxy) + i * m->maxy + j);
 }
 
+void liveOrDie(struct matrix *m, int i, int j, bool state)
+{
+	matrix_set_state(m,i,j,m->evolution,state);
+}
+
 void matrix_inicialize(struct matrix *m)
 {
 	int i,j;
 	m->evolution=0;
 	for(i = 0; i < m->maxx; i++){
 		for (j = 0; j < m->maxy; j++)
-			matrix_set_state(m, i, j, m->evolution, false);
+			liveOrDie(m, i, j, false);
 	}
 	ATTR_SET(m->flags,MATRIX_STATE);
 }
