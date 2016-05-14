@@ -87,12 +87,10 @@ struct state *state_alloc(int x, int y)
 
 void liveOrDie(struct matrix *m, int i, int j, bool state)
 {
-	struct state *st;
 	matrix_set_state(m,i,j,m->evolution,state);
 	if(state){
-		st = state_alloc(i,j);
+		struct state *st = state_alloc(i,j);
 		list_add(&st->list, &m->alive);
-		free(st);
 	}
 }
 
@@ -175,9 +173,6 @@ void afterLifeList(struct matrix *m)
 			}
 		}
 	}
-	free(tmp);
-	free(st);
-	free(aux);
 }
 
 void liveOrDieList(struct matrix *m)
@@ -185,6 +180,7 @@ void liveOrDieList(struct matrix *m)
 	int i, j;
 	struct state *st;
 	struct state *tmp;
+	struct state *tmp1;
 	list_for_each_entry_safe(st,tmp, &m->dead, list){
 		liveOrDie(m, st->x, st->y,false);
 		list_del(&(st->list));
@@ -198,6 +194,4 @@ void liveOrDieList(struct matrix *m)
 			list_move(&(st->list), &m->alive);
 		}
 	}
-	free(tmp);
-	free(st);
 }
