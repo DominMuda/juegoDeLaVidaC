@@ -14,6 +14,8 @@ void matrix_represent(const struct matrix *m);
 int livingCellsAround(int i, int j, const struct matrix *m);
 void matrix_evolve( struct matrix *m);
 void liveOrDie(struct matrix *m, int i, int j, bool state);
+void afterLifeList(struct matrix *m);
+void liveOrDieList(struct matrix *m);
 
 struct matrix *matrix_alloc();
 void matrix_free(struct matrix *m);

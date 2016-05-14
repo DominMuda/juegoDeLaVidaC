@@ -2,13 +2,13 @@
 all: mi_proy
 
 mi_proy:main.o matrix.o
-	gcc main.o matrix.o -o mi_proy
+	gcc -g main.o matrix.o -o mi_proy
 
 main.o:main.c headers/matrix.h
-	gcc -c main.c
+	gcc -c -g main.c
 
 matrix.o: headers/matrix.h matrix.c
-	gcc -c matrix.c
+	gcc -c -g matrix.c
 
 clean:
 	rm -f *.o

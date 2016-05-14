@@ -1,9 +1,11 @@
 #include "headers/matrix.h"
+#include "headers/list.h"
 #include <getopt.h>
 
 void test1();
 void test2();
 void test3();
+void testList();
 
 int main(int argc, char *argv[])
 {
@@ -39,7 +41,9 @@ int main(int argc, char *argv[])
         }
         //test1(x,y,n);
         //test2(x,y,n);
-        test3(x,y,n);
+        //test3(x,y,n);
+        testList();
+
 
         return EXIT_SUCCESS;
 }
@@ -121,11 +125,38 @@ void test3(int x, int y,int n)
                 liveOrDie(m, 5, 5, true);
                 liveOrDie(m, 5, 0, true);
 
-                for(cont = 0 ; cont < n; cont++){
-                        matrix_represent(m);
-                        matrix_evolve(m);
-                }
                 matrix_represent(m);
+
+                for(cont = 0 ; cont < n; cont++){
+                        afterLifeList(m);
+                        liveOrDieList(m);
+                        matrix_represent(m);
+                }
+
+                matrix_free(m);
+        }
+}
+
+void testList(){
+        int i, j, cont;
+        struct matrix *m = matrix_alloc(7,7);
+        if(m==NULL){
+                perror("ERROR : ");
+        }else{
+                matrix_inicialize(m);
+
+                liveOrDie(m, 3, 4, true);
+                liveOrDie(m, 3, 2, true);
+                liveOrDie(m, 3, 3, true);
+
+                matrix_represent(m);
+
+                for(cont = 0 ; cont < 4; cont++){
+                        afterLifeList(m);
+                        liveOrDieList(m);
+                        matrix_represent(m);
+                }
+
                 matrix_free(m);
         }
 }
